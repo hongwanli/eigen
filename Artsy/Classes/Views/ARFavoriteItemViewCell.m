@@ -18,41 +18,28 @@ static const CGFloat ARFavoriteCellLabelHeight = 34;
     self.imageView.image = [ARFeedImageLoader defaultPlaceholder];
 }
 
-+ (CGFloat)heightForCellWithOrientation:(UIInterfaceOrientation)orientation
++ (CGSize)sizeForCellwithSize:(CGSize)size layout:(UICollectionViewFlowLayout *)layout
 {
-    return ARFavoriteCellLabelHeight + ARFavoriteCellMetadataMargin + [self heightForImageWithOrientation:orientation];
+    CGFloat numberOfColumns = [UIDevice isPad] ? 3 : 2;
+
+    CGFloat sideMargins = layout.sectionInset.left + layout.sectionInset.right;
+    CGFloat interItemMargins= layout.minimumInteritemSpacing * (numberOfColumns - 1);
+
+    CGFloat margins = sideMargins + interItemMargins;
+
+    CGFloat width = (size.width - (margins)) / numberOfColumns;
+
+    CGFloat imageHeight = width * (2.0/3.0);
+    CGFloat metadataHeight = ARFavoriteCellLabelHeight + ARFavoriteCellMetadataMargin;
+
+    CGFloat height = imageHeight + metadataHeight;
+
+    return CGSizeMake(floor(width), floor(height));
 }
 
-+ (CGFloat)heightForImageWithOrientation:(UIInterfaceOrientation)orientation
++ (CGFloat)heightForMetadata
 {
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat width = CGRectGetWidth(screenRect);
-
-    if ([UIDevice isPad]) {
-        if (UIInterfaceOrientationIsLandscape(orientation)) {
-            return 184;
-        } else {
-            return 134;
-        }
-    } else {
-        return width/2 - 70;
-    }
-}
-
-+ (CGFloat)widthForCellWithOrientation:(UIInterfaceOrientation)orientation
-{
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat width = CGRectGetWidth(screenRect);
-
-    if ([UIDevice isPad]) {
-        if (UIInterfaceOrientationIsLandscape(orientation)) {
-            return 276;
-        } else {
-            return 201;
-        }
-    } else {
-        return width/2 - 30;
-    }
+    return ARFavoriteCellLabelHeight + ARFavoriteCellMetadataMargin;
 }
 
 - (void)setupWithRepresentedObject:(id)object

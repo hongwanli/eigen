@@ -72,6 +72,8 @@
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+
     self.embeddedItemsVC.delegate = self;
     self.embeddedItemsVC.showTrailingLoadingIndicator = YES;
 
@@ -118,11 +120,10 @@
 
     self.embeddedItemsVC.scrollDelegate = [ARScrollNavigationChief chief];
 
-    [self setModuleItemSizesForOrientation:[UIApplication sharedApplication].statusBarOrientation];
+    [self setModuleItemSizesForSize:self.view.frame.size];
     [self.embeddedItemsVC.headerView updateConstraints];
     self.collectionView.scrollsToTop = YES;
 
-    [super viewDidLoad];
 }
 
 - (UICollectionView *)collectionView
@@ -135,24 +136,21 @@
     return [UIDevice isPad] ? 193 : 127;
 }
 
-- (ARArtworkMasonryLayout)masonryLayoutForPadWithOrientation:(UIInterfaceOrientation)orientation
+- (ARArtworkMasonryLayout)masonryLayoutForPadWithSize:(CGSize)size
 {
-    return UIInterfaceOrientationIsLandscape(orientation) ? ARArtworkMasonryLayout4Column : ARArtworkMasonryLayout3Column;
+    return (size.width > size.height) ? ARArtworkMasonryLayout4Column : ARArtworkMasonryLayout3Column;
 }
 
-- (void)setModuleItemSizesForOrientation:(UIInterfaceOrientation)orientation
+- (void)setModuleItemSizesForSize:(CGSize)size
 {
-    CGFloat width = [ARFavoriteItemViewCell widthForCellWithOrientation:orientation];
-    CGFloat height = [ARFavoriteItemViewCell heightForCellWithOrientation:orientation];
-
-    self.genesModule.moduleLayout.itemSize = (CGSize){ width, height };
-    self.artistsModule.moduleLayout.itemSize = (CGSize){ width, height };
+    [self.genesModule resetLayoutItemSizeWithSize:size];
+    [self.artistsModule resetLayoutItemSizeWithSize:size];
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self setModuleItemSizesForOrientation:(UIInterfaceOrientation)toInterfaceOrientation];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [self setModuleItemSizesForSize:size];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

@@ -41,17 +41,19 @@
     }
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    [self setItemSizeForOrientation:toInterfaceOrientation];
-    [self updateHeightConstraint];
-    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [self setItemSizeForSize:size];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self updateHeightConstraint];
+    } completion:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self setItemSizeForOrientation:[UIApplication sharedApplication].statusBarOrientation];
+    [self setItemSizeForSize:self.view.frame.size];
     [self updateHeightConstraint];
 }
 
@@ -60,6 +62,7 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     CGFloat sideMargin = [UIDevice isPad] ?  50 : 20;
     layout.sectionInset = UIEdgeInsetsMake(20, sideMargin, 20, sideMargin);
+    layout.minimumInteritemSpacing = sideMargin;
     UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
 
     collectionView.delegate = self;
@@ -70,10 +73,10 @@
     self.view = collectionView;
 }
 
-- (void)setItemSizeForOrientation:(UIInterfaceOrientation)orientation
+- (void)setItemSizeForSize:(CGSize)size
 {
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.view.collectionViewLayout;
-    layout.itemSize = (CGSize){ [ARFavoriteItemViewCell widthForCellWithOrientation:orientation], [ARFavoriteItemViewCell heightForCellWithOrientation:orientation] };
+    layout.itemSize = [ARFavoriteItemViewCell sizeForCellwithSize:size layout:layout];
     [self.view.collectionViewLayout invalidateLayout];
     [self.view layoutIfNeeded];
 }
