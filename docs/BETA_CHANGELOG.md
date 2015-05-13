@@ -10,6 +10,7 @@
 * Add ability to paginate left and right by tapping hero unit page control - 1aurabrown
 * Add breadcrumbs to crash reports, especially around ARTiledImageView - alloy
 * Remove progress indicator from martsy views as soon as the state of the webview is at DOMContentLoaded - alloy
+* Improve masonry/collection view layout changes when rotation occurs using iOS8 API - 1aurabrown
 
 ## 2015.04.23
 

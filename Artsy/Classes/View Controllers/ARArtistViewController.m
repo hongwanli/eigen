@@ -207,6 +207,8 @@ typedef NS_ENUM(NSInteger, ARArtistArtworksDisplayMode) {
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+
+    // Ensure that the related artists VC has the correct dimensions to lay out its content BEFORE it appears.
     [self.relatedArtistsVC.view layoutIfNeeded];
     [self setArtworksHeight];
 }
@@ -300,11 +302,6 @@ typedef NS_ENUM(NSInteger, ARArtistArtworksDisplayMode) {
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        NSLog(@"%f, %f", self.view.frame.size.width, self.view.frame.size.height);
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        NSLog(@"%f, %f", self.view.frame.size.width, self.view.frame.size.height);
-    }];
     [self setArtworksHeight];
 }
 
